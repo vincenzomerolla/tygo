@@ -17,6 +17,8 @@ packages:
   - path: "github.com/vincenzomerolla/tygo/examples/simple"
     fallback_type: unknown
   - path: "github.com/vincenzomerolla/tygo/examples/inheritance"
+    type_mappings:
+      bookapp.AuthorWithInheritance: "bookapp.AuthorWithInheritance"
     fallback_type: unknown
     frontmatter:
       | # We can define some additional text to put at the start of the file.

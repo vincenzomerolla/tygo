@@ -304,7 +304,7 @@ func (g *PackageGenerator) writeStructFields(s *strings.Builder, fields []*ast.F
 		}
 
 		var name string
-		var tstype string
+		// var tstype string
 		if f.Tag != nil {
 			tags, err := structtag.Parse(f.Tag.Value[1 : len(f.Tag.Value)-1])
 
@@ -315,12 +315,15 @@ func (g *PackageGenerator) writeStructFields(s *strings.Builder, fields []*ast.F
 			jsonTag, err := tags.Get("json")
 			if err == nil {
 				name = jsonTag.Name
-				if name == "-" {
+				if name == "-" || name == "" {
 					continue
 				}
 
 				optional = jsonTag.HasOption("omitempty")
+			} else {
+				continue
 			}
+
 			yamlTag, err := tags.Get("yaml")
 			if err == nil {
 				name = yamlTag.Name
@@ -331,16 +334,16 @@ func (g *PackageGenerator) writeStructFields(s *strings.Builder, fields []*ast.F
 				optional = yamlTag.HasOption("omitempty")
 			}
 
-			tstypeTag, err := tags.Get("tstype")
-			if err == nil {
-				tstype = tstypeTag.Name
+			// tstypeTag, err := tags.Get("tstype")
+			// if err == nil {
+			// 	tstype = tstypeTag.Name
 
-				if tstype == "-" || tstypeTag.HasOption("extends") {
-					continue
-				}
-				required = tstypeTag.HasOption("required")
-				readonly = tstypeTag.HasOption("readonly")
-			}
+			// 	if tstype == "-" || tstypeTag.HasOption("extends") {
+			// 		continue
+			// 	}
+			// 	required = tstypeTag.HasOption("required")
+			// 	readonly = tstypeTag.HasOption("readonly")
+			// }
 		}
 
 		if len(name) == 0 {
@@ -380,11 +383,11 @@ func (g *PackageGenerator) writeStructFields(s *strings.Builder, fields []*ast.F
 
 		s.WriteString(": ")
 
-		if tstype == "" {
-			g.writeType(s, f.Type, nil, depth, false)
-		} else {
-			s.WriteString(tstype)
-		}
+		// if tstype == "" {
+		g.writeType(s, f.Type, nil, depth, false)
+		// } else {
+		// s.WriteString(tstype)
+		// }
 		s.WriteByte(';')
 
 		if f.Comment != nil && g.PreserveTypeComments() {

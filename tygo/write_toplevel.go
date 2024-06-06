@@ -157,18 +157,23 @@ func (g *PackageGenerator) writeTypeSpec(
 func (g *PackageGenerator) writeTypeInheritanceSpec(s *strings.Builder, fields []*ast.Field) {
 	inheritances := make([]string, 0)
 	for _, f := range fields {
-		if f.Type != nil && f.Tag != nil {
+		if f.Type != nil && len(f.Names) < 1 {
 			tags, err := structtag.Parse(f.Tag.Value[1 : len(f.Tag.Value)-1])
 			if err != nil {
 				panic(err)
 			}
 
-			tstypeTag, err := tags.Get("tstype")
-			if err != nil || !tstypeTag.HasOption("extends") {
+			// tstypeTag, err := tags.Get("tstype")
+			// if err != nil || !tstypeTag.HasOption("extends") {
+			// 	continue
+			// }
+
+			_, err = tags.Get("json")
+			if err == nil {
 				continue
 			}
 
-			name, valid := getInheritedType(f.Type, tstypeTag, g.conf)
+			name, valid := getInheritedType(f.Type, g.conf)
 			if valid {
 				inheritances = append(inheritances, name)
 			}
@@ -251,14 +256,14 @@ func (g *PackageGenerator) writeValueSpec(
 	}
 }
 
-func getInheritedType(f ast.Expr, tag *structtag.Tag, conf *PackageConfig) (name string, valid bool) {
+func getInheritedType(f ast.Expr, conf *PackageConfig) (name string, valid bool) {
 	switch ft := f.(type) {
 	case *ast.Ident:
 		if ft.Obj != nil && ft.Obj.Decl != nil {
 			dcl, ok := ft.Obj.Decl.(*ast.TypeSpec)
 			if ok {
 				_, isStruct := dcl.Type.(*ast.StructType)
-				valid = isStruct && dcl.Name.IsExported()
+				valid = isStruct && (slices.Contains(conf.AllowedUnexportedFields, dcl.Name.Name) || dcl.Name.IsExported())
 				name = dcl.Name.Name
 			}
 		} else {
@@ -267,13 +272,13 @@ func getInheritedType(f ast.Expr, tag *structtag.Tag, conf *PackageConfig) (name
 			name = ft.Name
 		}
 	case *ast.IndexExpr:
-		name, valid = getInheritedType(ft.X, tag, conf)
+		name, valid = getInheritedType(ft.X, conf)
 		if valid {
 			generic := getIdent(ft.Index.(*ast.Ident).Name)
 			name += fmt.Sprintf("<%s>", generic)
 		}
 	case *ast.IndexListExpr:
-		name, valid = getInheritedType(ft.X, tag, conf)
+		name, valid = getInheritedType(ft.X, conf)
 		if valid {
 			generic := ""
 			for _, index := range ft.Indices {
@@ -285,14 +290,11 @@ func getInheritedType(f ast.Expr, tag *structtag.Tag, conf *PackageConfig) (name
 		valid = ft.Sel.IsExported()
 		name = fmt.Sprintf("%s.%s", ft.X, ft.Sel)
 	case *ast.StarExpr:
-		name, valid = getInheritedType(ft.X, tag, conf)
+		name, valid = getInheritedType(ft.X, conf)
 		if valid {
 			// If the type is not required, mark as optional inheritance
-			if !tag.HasOption("required") {
-				name = fmt.Sprintf("Partial<%s>", name)
-			}
+			name = fmt.Sprintf("Partial<%s>", name)
 		}
-
 	}
 	return
 }

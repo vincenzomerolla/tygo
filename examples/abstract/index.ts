@@ -52,6 +52,6 @@ export interface StructBar {
   field: Foo; // Line Comment for field Field of type Foo
   weird: number /* int64 */;
   field_that_should_be_optional?: string;
-  field_that_should_not_be_optional: string;
-  readonly field_that_should_be_readonly: string;
+  field_that_should_not_be_optional?: string;
+  field_that_should_be_readonly: string;
 }

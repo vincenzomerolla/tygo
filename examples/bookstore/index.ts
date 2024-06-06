@@ -32,7 +32,7 @@ export interface Book {
    * ISBN identifier of the book, null if not known.
    */
   isbn: ISBN;
-  genre: 'novel' | 'crime' | 'fantasy';
+  genre: string;
   chapters: Chapter[];
   published_at?: string /* RFC 3339 formatted */;
 }

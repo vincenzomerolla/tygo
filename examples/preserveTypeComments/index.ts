@@ -16,5 +16,5 @@ export interface User {
   /**
    * Struct field comments are preserved unless configured to "none"
    */
-  id: string | null;
+  id: unknown /* uuid.NullUUID */;
 }

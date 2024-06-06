@@ -15,7 +15,7 @@ export interface UserEntry {
    * Instead of specifying `tstype` we could also declare the typing
    * for uuid.NullUUID in the config file.
    */
-  id: string | null;
+  id: unknown /* uuid.NullUUID */;
   prefs: { [key: string]: {
     foo: number /* uint32 */;
     /**

@@ -8,7 +8,7 @@ import * as bookapp from "../bookstore"
  * TokenType Built-in type alias
  */
 export type TokenType = string;
-export interface StructEmbed extends Base {
+export interface StructEmbed {
   reference: Reference; // embed struct without `tstype:"extends"`
   other_reference: Reference;
   bar: string;

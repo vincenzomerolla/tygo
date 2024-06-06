@@ -4,11 +4,5 @@
 // source: yaml.go
 
 export interface YAMLTest {
-  id: string;
-  prefs: { [key: string]: {
-    foo: number /* uint32 */;
-  }};
-  address?: string;
-  nickname?: string;
   thiswillgetlowercased: string;
 }
