@@ -168,8 +168,8 @@ func (g *PackageGenerator) writeTypeInheritanceSpec(s *strings.Builder, fields [
 			// 	continue
 			// }
 
-			_, err = tags.Get("json")
-			if err == nil {
+			_, err2 := tags.Get("json")
+			if err2 == nil {
 				continue
 			}
 
