@@ -24,7 +24,7 @@ type Other[T int, X string] struct {
 	OtherWithBase  Base                             `                                          json:"otherWithBase"`
 	OtherWithBase2 Base2[X]                         `                                          json:"otherWithBase2"`
 	OtherValue     string                           `                                          json:"otherValue"`
-	Author         bookapp.AuthorWithInheritance[T] `tstype:"bookapp.AuthorWithInheritance<T>" json:"author"`
-	bookapp.Book   `tstype:",extends"`
-	TextBook       *bookapp.TextBook[T] `tstype:",extends,required"`
+	Author         bookapp.AuthorWithInheritance[T] `                                          json:"author"`
+	bookapp.Book
+	TextBook *bookapp.TextBook[T]
 }

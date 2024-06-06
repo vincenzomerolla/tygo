@@ -22,11 +22,6 @@ export type Something = any;
 export interface EmptyStruct {
 }
 export interface ValAndPtr<V extends unknown, PT extends (V | undefined), Unused extends number /* uint64 */> {
-  Val: V;
-  /**
-   * Comment for ptr field
-   */
-  Ptr: PT; // ptr line comment
 }
 export interface ABCD<A extends string, B extends string, C extends UnionType, D extends number /* int64 */ | boolean> {
   a: A;
@@ -35,13 +30,10 @@ export interface ABCD<A extends string, B extends string, C extends UnionType, D
   d: D;
 }
 export interface Foo<A extends string | number /* uint64 */, B extends (A | undefined)> {
-  Bar: A;
-  Boo: B;
 }
 export interface WithFooGenericTypeArg<A extends Foo<string, string | undefined>> {
   some_field: A;
 }
 export interface Single<S extends string | number /* uint */> {
-  Field: S;
 }
 export type SingleSpecific = Single<string>;

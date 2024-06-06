@@ -4,5 +4,4 @@
 // source: yaml.go
 
 export interface YAMLTest {
-  thiswillgetlowercased: string;
 }

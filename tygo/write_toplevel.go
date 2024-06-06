@@ -157,25 +157,35 @@ func (g *PackageGenerator) writeTypeSpec(
 func (g *PackageGenerator) writeTypeInheritanceSpec(s *strings.Builder, fields []*ast.Field) {
 	inheritances := make([]string, 0)
 	for _, f := range fields {
-		if f.Type != nil && len(f.Names) < 1 {
-			tags, err := structtag.Parse(f.Tag.Value[1 : len(f.Tag.Value)-1])
-			if err != nil {
-				panic(err)
-			}
+		if f.Type != nil {
+			if f.Tag != nil {
+				tags, err := structtag.Parse(f.Tag.Value[1 : len(f.Tag.Value)-1])
+				if err != nil {
+					panic(err)
+				}
 
-			// tstypeTag, err := tags.Get("tstype")
-			// if err != nil || !tstypeTag.HasOption("extends") {
-			// 	continue
-			// }
+				tstypeTag, err := tags.Get("tstype")
+				if err != nil || !tstypeTag.HasOption("extends") {
+					continue
+				}
 
-			_, err2 := tags.Get("json")
-			if err2 == nil {
-				continue
-			}
+				jsonTag, _ := tags.Get("json")
+				if jsonTag != nil {
+					continue
+				}
 
-			name, valid := getInheritedType(f.Type, g.conf)
-			if valid {
-				inheritances = append(inheritances, name)
+				name, valid := getInheritedType(f.Type, g.conf)
+				if valid {
+					inheritances = append(inheritances, name)
+				}
+			} else {
+				if f.Names == nil {
+					name, valid := getInheritedType(f.Type, g.conf)
+
+					if valid {
+						inheritances = append(inheritances, name)
+					}
+				}
 			}
 		}
 	}

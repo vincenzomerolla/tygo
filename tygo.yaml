@@ -18,6 +18,8 @@ packages:
     fallback_type: unknown
   - path: "github.com/vincenzomerolla/tygo/examples/inheritance"
     type_mappings:
+      bookapp.Book: "bookapp.Book"
+      bookapp.TextBook: "bookapp.TextBook"
       bookapp.AuthorWithInheritance: "bookapp.AuthorWithInheritance"
     fallback_type: unknown
     frontmatter:
